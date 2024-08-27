@@ -1,0 +1,135 @@
+body{
+    margin: 0 auto;
+    background-color: rgb(225, 222, 222);
+    width: 1000px;
+    height: 200px;
+}
+.container{
+    background-color: white;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+img {
+    border-radius: 50%;
+  }
+.profile-container{
+    float: left;
+    margin: 20px 40px 20px 20px;
+}
+.section{
+    display: inline-block;
+    background-color: white;
+    color: black;
+    width: 790px;
+    margin-left: 0px;
+}
+.section h1{
+    width: 750px;
+    height: 12px;
+}
+.section h2{
+    font-size: large;
+    color: darkcyan;
+    width: 795px;
+    height: 10px;
+    padding-top: 6px;
+}
+.section-paragraph{
+    margin: 1px;
+    padding: 1px;
+    background-color:rgb(14, 52, 107);
+    color: white;
+    width: 997px;
+    height: 115px;
+}
+.section-paragraph p{
+    padding: 10px;
+}
+.main-footer{
+    background-color: rgb(17, 143, 147);
+    width: 980px;
+    height: 120px;
+    padding: 10px;
+    color:white;
+}
+.footer-box{
+    width: 450px;
+    height: auto;
+    float: left;
+    color:white;
+    padding: 20px;
+}
+.footer-box > ul{
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+}
+.footer-box > ul > li > a{
+    display: inline-block;
+    font-size: 14px;
+    color: white;
+    text-decoration: none;
+    width: max-content;
+    height: 20px;
+}
+.fullcontainer{
+    background-color: white;
+    height: auto;
+}
+.section-experience{
+    background-color: white;
+    width: 530px;
+    padding: 30px 30px 50px 30px;
+    color: black;
+    float: left;
+    font-size: medium;
+}
+.skill-container{
+    float: right;
+    width: 410px;
+    height: 1713px;
+    background-color:white;
+}
+.section-skills{
+    height: 1130px;
+    width: 380px;
+    padding-left: 20px;
+    padding-top: 10px;
+    border-radius: 10px;
+    margin-top: 10px;
+    color: black;
+    font-size: small;
+    background-color:#c8c3c3;
+}
+.section-skills p{
+    font-size: small;
+}
+.skillSection{
+    height: 510px;
+    margin-top: 10px;
+    border-radius: 10px;
+    width: 380px;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    color: black;
+    background-color:#c8c3c3;
+}
+.skills > ul > p{
+    box-shadow: 8px 10px 20px #000;
+    width: max-content;
+    height: 15px;
+    padding: 6px;
+    display: block;
+    margin-bottom: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: rgb(219, 222, 221);
+    border-radius: 30px 30px 30px 30px;
+    text-align: center;
+    float: left;
+}
+
+
