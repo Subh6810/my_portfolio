@@ -1,0 +1,34 @@
+name: Update QA Engineer experience details
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace QA Engineer bullets
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = '''<ul><li>Performed manual testing across ride, delivery and rental modules.</li><li>Created and executed test cases, documented defects and worked with development teams in Agile workflows using JIRA.</li></ul>'''
+          new = '''<ul><li>Performed manual testing across ride, delivery, and rental modules.</li><li>Collaborated with development teams in agile workflows using JIRA.</li><li>Developed and executed test cases, identifying reproducible issues.</li><li>Work closely with the customer and the project team to understand the requirements.</li><li>Perform test execution using test management tools.</li><li>Document defects using the project’s defect management tools.</li></ul>'''
+          if old not in s:
+              raise SystemExit('Expected QA Engineer bullet block not found')
+          p.write_text(s.replace(old, new, 1), encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Update QA Engineer experience details from resume'
+          git push
