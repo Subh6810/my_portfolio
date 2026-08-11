@@ -1,0 +1,34 @@
+name: Update Jugnoo CSM experience details
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace Jugnoo CSM bullets
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = '''<ul><li>Managed onboarding, configuration, requirement validation and successful implementation.</li><li>Collected and escalated client issues to development teams and participated in daily Scrum.</li><li>Collaborated with technical teams on API integrations and third-party platform implementations.</li><li>Handled cross-selling, feature adoption and customer issue resolution.</li><li>Supported product planning and risk management, reducing delivery timelines by <b>40%</b>.</li></ul>'''
+          new = '''<ul><li>Working on customer onboarding by configuring software, validating customer requirements, and ensuring successful implementation aligned with subscription plans.</li><li>Keep a detailed record of quality and imperfect features to find repetitive product issues to include in the product enhancement. Managing program risks, issues and changes in the product plan to reduce delivery timeline by <b>40%</b>.</li><li>Collected, validated, and escalated client-reported issues to development teams.</li><li>Participate in daily Scrum meetings to follow the progress of the sprint and take the necessary action as needed.</li><li>Help customers achieve their educational goals using our products, identify and address common customer issues & their queries.</li><li>Prepare and nurture customers to become product advocates.</li><li>Collaborated with the tech team on API integrations or third-party platform implementations.</li><li>Handle cross-selling and product/feature adoption.</li><li>Follow up with customers to ensure that their issues have been resolved to their satisfaction.</li><li>Open to handling onboarding processes.</li></ul>'''
+          if old not in s:
+              raise SystemExit('Expected Jugnoo CSM bullet block not found')
+          p.write_text(s.replace(old, new, 1), encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Update Jugnoo CSM experience details from resume'
+          git push
