@@ -1,0 +1,44 @@
+name: Update Lead CSM full details
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace Lead CSM experience block
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          marker = '<div class="role-title">Lead Customer Success Manager</div>'
+          start = s.find(marker)
+          if start == -1:
+              raise SystemExit('Lead Customer Success Manager section not found')
+          end = s.find('</article>', start)
+          if end == -1:
+              raise SystemExit('Lead Customer Success Manager article end not found')
+          block = s[start:end]
+          new_ul = '''<ul><li>Communicating with the clients and ensuring proper feedback regarding the product that benefits the organisation, account development, and nurturing the client.</li><li>Directed and developed a high-performing team of <b>10–15 Customer Success Managers</b>, aligning initiatives with organisational goals to drive retention, growth, and operational excellence.</li><li>Own overall relationship with the clients, which includes increasing adoption, ensuring retention and satisfaction.</li><li>Introduced training programs, knowledge base, reference manuals and videos.</li><li>Closely involved in customer concerns and works closely with the project management teams on prioritising tasks and managing customer escalations.</li><li>Developing strategies for churned accounts.</li><li>Track status for renewal commitment and proactively reach out to customers as required.</li><li>Implemented new processes which improve renewal forecasting accuracy.</li><li>Recognised for consistently reaching <b>above 95% MRR renewal rate</b>.</li><li><b>Client Regions:</b> USA, South America, UK, APAC, EMEA, Middle East, West Africa</li></ul>'''
+          block2 = re.sub(r'<ul>.*?</ul>', new_ul, block, count=1, flags=re.S)
+          if block2 == block:
+              raise SystemExit('Lead CSM bullet list not found')
+          s = s[:start] + block2 + s[end:]
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit updated portfolio
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Add full Lead CSM details and client regions'
+          git push
