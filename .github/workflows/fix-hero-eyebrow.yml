@@ -1,0 +1,37 @@
+name: Fix hero professional tagline display
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fix hero tagline
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = '<div class="eyebrow">Customer Success Manager · SaaS · AI · CX</div>'
+          new = '<div class="eyebrow hero-eyebrow"><span>Customer Success Manager</span><i>•</i><span>SaaS</span><i>•</i><span>AI</span><i>•</i><span>CX</span></div>'
+          if old not in s:
+              raise SystemExit('Hero tagline not found')
+          s = s.replace(old, new, 1)
+          css = '.hero-eyebrow{display:flex;align-items:center;flex-wrap:wrap;gap:9px;line-height:1.5}.hero-eyebrow i{font-style:normal;color:#8bb2ff;font-size:13px}.hero-eyebrow span{white-space:nowrap}'
+          s = s.replace('</style>', css + '</style>', 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Fix hero professional tagline display'
+          git push
