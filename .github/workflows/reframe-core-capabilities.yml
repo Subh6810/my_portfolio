@@ -1,0 +1,33 @@
+name: Reframe core capabilities
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reframe capabilities
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          start = s.index('<section><div class="wrap"><div class="section-top"><div><div class="section-kicker">05 · Core Capabilities</div>')
+          end = s.index('</section>', start) + len('</section>')
+          new = '''<section><div class="wrap"><div class="section-top"><div><div class="section-kicker">05 · Core Capabilities</div><h2 class="section-title">Where I Create Value</h2></div><p class="section-copy">Creating value through strategic customer relationships, retention, adoption, growth and strong cross-functional leadership.</p></div><div class="cap-grid"><div class="cap"><div class="cap-icon">01</div><h3>Customer Success & Retention</h3><p>Customer lifecycle management, relationship building, renewals, churn prevention, account expansion, customer health, QBRs and retention-focused strategies.</p></div><div class="cap"><div class="cap-icon">02</div><h3>Customer Experience & Advocacy</h3><p>Customer journey management, feedback analysis, root-cause analysis, escalation management, service improvement and building strong customer advocacy.</p></div><div class="cap"><div class="cap-icon">03</div><h3>Account Growth & Adoption</h3><p>Driving product adoption, identifying upsell and cross-sell opportunities, supporting expansion, strengthening customer engagement and delivering ongoing customer value.</p></div><div class="cap"><div class="cap-icon">04</div><h3>Customer Success Leadership</h3><p>Team development, coaching, performance management, process improvement, operational excellence and cross-functional alignment to achieve business goals.</p></div><div class="cap"><div class="cap-icon">05</div><h3>AI, Product & Implementation</h3><p>Conversational AI, customised chatbot solutions, customer onboarding, requirement gathering, implementation support, adoption analysis and customer-focused product improvements.</p></div><div class="cap"><div class="cap-icon">06</div><h3>Technical & Business Collaboration</h3><p>Stakeholder management, business analysis, Agile/Scrum, testing, API and third-party integrations, issue analysis, Salesforce, Freshdesk and JIRA.</p></div></div></div></section>'''
+          p.write_text(s[:start] + new + s[end:], encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Reframe core capabilities for Senior CSM positioning'
+          git push
