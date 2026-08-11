@@ -1,0 +1,33 @@
+name: Update value proposition section
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update section
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = re.compile(r'<section>\s*<div class="wrap"><div class="section-top"><div><div class="section-kicker">05 · Core Capabilities</div>.*?</section>', re.S)
+          new = '''<section><div class="wrap"><div class="section-top"><div><div class="section-kicker">05 · Core Capabilities</div><h2 class="section-title">Where I Create Value</h2></div><p class="section-copy">Creating value through strategic customer relationships, retention, adoption, growth and strong cross-functional leadership.</p></div><div class="cap-grid"><div class="cap"><div class="cap-icon">01</div><h3>Strategic Account Management</h3><p>Build trusted relationships with key stakeholders, understand business priorities, create success plans, and align customer objectives with business outcomes.</p></div><div class="cap"><div class="cap-icon">02</div><h3>Retention & Revenue Growth</h3><p>Proactively manage customer health, identify risks, drive renewals, reduce churn, and identify opportunities for expansion and account growth.</p></div><div class="cap"><div class="cap-icon">03</div><h3>Customer Value & Adoption</h3><p>Drive onboarding and product adoption, demonstrate business value, and help customers continuously realise value from their investment.</p></div><div class="cap"><div class="cap-icon">04</div><h3>Executive Stakeholder Engagement</h3><p>Engage decision-makers through structured communication, QBRs, success reviews, and proactive business conversations that strengthen long-term partnerships.</p></div><div class="cap"><div class="cap-icon">05</div><h3>Customer Success Leadership</h3><p>Lead and develop Customer Success teams, coach team members, improve processes, establish best practices, and drive operational excellence aligned with organisational goals.</p></div><div class="cap"><div class="cap-icon">06</div><h3>Voice of the Customer</h3><p>Represent the customer internally and collaborate with Sales, Product, Engineering, Operations and other teams to resolve challenges, influence improvements, and deliver better customer outcomes.</p></div></div></div></section>'''
+          if not old.search(s):
+              raise SystemExit('Core Capabilities section not found')
+          s = old.sub(new, s, count=1)
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Update value proposition section for Senior CSM positioning'
+          git push
