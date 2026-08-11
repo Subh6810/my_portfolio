@@ -1,0 +1,33 @@
+name: Update core capabilities
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update capabilities section
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          start = s.index('<section><div class="wrap"><div class="section-top"><div><div class="section-kicker">05 · Core Capabilities</div>')
+          end = s.index('</section>', start) + len('</section>')
+          new = '''<section><div class="wrap"><div class="section-top"><div><div class="section-kicker">05 · Core Capabilities</div><h2 class="section-title">Where I Create Value</h2></div><p class="section-copy">Creating value through strategic customer relationships, retention, adoption, growth and strong cross-functional leadership.</p></div><div class="cap-grid"><div class="cap"><div class="cap-icon">01</div><h3>Strategic Customer Success</h3><p>Customer lifecycle management, customer relationships, retention, renewals, expansion, QBRs, MRR and long-term account growth.</p></div><div class="cap"><div class="cap-icon">02</div><h3>Customer Experience & Advocacy</h3><p>Customer journey management, feedback analysis, customer satisfaction, escalation management, root-cause analysis, service improvement and customer advocacy.</p></div><div class="cap"><div class="cap-icon">03</div><h3>Account Growth & Adoption</h3><p>Product and feature adoption, upselling, cross-selling, churn management, renewal commitment tracking and identifying opportunities to strengthen customer relationships.</p></div><div class="cap"><div class="cap-icon">04</div><h3>Customer Success Leadership</h3><p>Team leadership, coaching, performance improvement, operational excellence, process improvement, team collaboration and alignment with organisational goals.</p></div><div class="cap"><div class="cap-icon">05</div><h3>Onboarding & Implementation</h3><p>Customer onboarding, requirement gathering, business analysis, implementation support, customer education, issue resolution and ensuring successful adoption.</p></div><div class="cap"><div class="cap-icon">06</div><h3>Cross-functional & Technical Collaboration</h3><p>Stakeholder management, project coordination, Agile/Scrum, testing, API and third-party integrations, Salesforce, Freshdesk, JIRA, Conversational AI and custom chatbot design.</p></div></div></div></section>'''
+          p.write_text(s[:start] + new + s[end:], encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Update core capabilities for Senior CSM profile'
+          git push
