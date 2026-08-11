@@ -1,0 +1,41 @@
+name: Refine experience badges
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update experience badges
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          replacements = {
+              'Customer Journey · CX · Root Cause Analysis': 'Customer Feedback · Journey Mapping · CX Improvement',
+              'SaaS · Conversational AI · Leadership': 'Customer Retention · AI Chatbots · Account Growth',
+              'Leadership · Renewals · Churn Management': 'CS Leadership · Client Relationships · Renewals',
+              'Implementation · APIs · Agile · Requirements': 'Customer Onboarding · Requirements · APIs · Cross-selling',
+              'QA · Testing · JIRA · Agile': 'Manual Testing · Test Cases · JIRA · Defect Management',
+          }
+          for old, new in replacements.items():
+              if old not in s:
+                  raise SystemExit(f'Badge not found: {old}')
+              s = s.replace(old, new, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Refine experience badges to match profile'
+          git push
