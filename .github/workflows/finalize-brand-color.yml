@@ -1,0 +1,35 @@
+name: Finalize brand color
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix-brand:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Force SUBHALAXMI JENA to one black color
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace('<div class="brand">SUBHALAXMI <span>JENA</span></div>', '<div class="brand">SUBHALAXMI JENA</div>')
+          s = s.replace('.brand span{color:var(--blue)}', '.brand span{color:var(--ink)}')
+          marker = '.brand{font-family:Manrope,sans-serif;font-weight:800;letter-spacing:-.02em;font-size:15px}'
+          if marker in s and '.brand span{color:var(--ink)}' not in s:
+              s = s.replace(marker, marker + '.brand span{color:var(--ink)}')
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit index.html
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Fix header brand color for JENA'
+          git push
